@@ -1,8 +1,7 @@
 import  tweepy, json
 from twitter import *
-from src.Mention import Mention
-
-from src.Retweeter import Retweeter
+from entities.Mention import Mention
+from entities.Retweeter import Retweeter
 
 class S_Twitter :
 

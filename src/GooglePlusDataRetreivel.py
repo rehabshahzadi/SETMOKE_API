@@ -1,5 +1,5 @@
 from apiclient import discovery
-from src.Mention import Mention
+from entities.Mention import  Mention
 class GooglePlus:
 
     def __init__(self, API_KEY):
