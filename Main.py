@@ -5,13 +5,13 @@ from util.ConfigParser import ConfigParser
 # import util.Input
 import json
 
-def save_to_file(mentionlist):
-    length=len(mentionlist)
+def save_to_file(googlePlus_mentionlist):
+    length=len(googlePlus_mentionlist)
     writer=open("temp",'w')
     writer.write("[\n")
    # jsonArray=[]
     count=1
-    for items in mentionlist:
+    for items in googlePlus_mentionlist:
 
         resharers=items.get_resharer()
         if not resharers:
@@ -44,9 +44,9 @@ if __name__ == '__main__':
     gp = GooglePlus(api_key)
 
     googlePlus_mentionlist = gp.get_googleplus_data(keyword_to_search, limit)
-    #print(googlePlus_mentionlist)
+    print(googlePlus_mentionlist)
 
-    #save_to_file(googlePlus_mentionlist)
+    save_to_file(googlePlus_mentionlist)
     twitter_api_credentials = obj.get("twitter_credentials")
     consumer_key = twitter_api_credentials["consumer_key"]
     consumer_secret = twitter_api_credentials["consumer_secret"]
@@ -56,7 +56,6 @@ if __name__ == '__main__':
     twitter_mentionlist=twitter.get_twitter_data(keyword_to_search, limit)
 
     
-
 
 
 
