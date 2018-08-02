@@ -1,5 +1,6 @@
-### SETMOKE API v-1.0 ###
-### Getting Started ###
+## SETMOKE API v-1.0 ##
+##Getting Started ##
+This project aims to get the basic fields of the data we parsed.If you want to parse the whole data you can change the following files(TwitterDataRetrievel.py,GooglePlusDataRetreivel.py) as per requirement. project  returns the output in **JSON format**
 ### Prerequisites ###
 * Install python(3.5.0) , pip using the following commands
   - $ sudo apt-get update
@@ -17,7 +18,7 @@
 To install the packages required for this project ,make sure you are in **root directory**.Run the following command from here
  - $ pip install -r ../requirements.txt
 Download all the packages written in this file
-#### Getting API credentials 
+####Getting API credentials 
 Open the conf/config.ini to update with your own api_credentials
 * Step 1: [Getting Twitter API keys](http://adilmoujahid.com/posts/2014/07/twitter-analytics/)
    - In order to access Twitter API, we need to get 4 pieces of information from Twitter: API key, API secret, Access token and Access token secret. Follow the steps below to get all 4 elements:
