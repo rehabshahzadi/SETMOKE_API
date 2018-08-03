@@ -2,7 +2,7 @@ import configparser
 
 class ConfigParser:
     parser = configparser.ConfigParser()
-    parser.read("/home/rehab/PycharmProjects/social_media/conf/config.ini")
+    parser.read("conf/config.ini")
 
     def __init__(self):
         self.secret_twitter_api_info = self.confParser("twitter_secrete_api_keys")
