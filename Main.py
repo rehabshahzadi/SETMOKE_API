@@ -1,7 +1,10 @@
 import argparse
 from src.GooglePlusDataRetreivel import GooglePlus
 from src.TwitterDataRetrievel import S_Twitter#
-from util.ConfigParser import ConfigParser
+from util.ConfigurationParser import ConfigurationParser
+from util.Mysql import MySql
+
+from  util.SETMOKE_API import SETMOKE_API
 # import util.Input
 import json
 
@@ -41,27 +44,33 @@ def save_to_file(list):
     writer.write("]")
 if __name__ == '__main__':
 
+
+
+    db=MySql('localhost','root','rehab105','SMM_DB1')
  # main()
     #keyword_to_search=util.Input.kwd
     #limit=util.Input.limit
-    keyword_to_search="imran khan"
+    keyword_to_search="jahangir"
     limit=2
-    obj = ConfigParser()
-    gp_api_credentials = obj.get("googlePlus_credentials")
-    api_key = gp_api_credentials["api_key"]
-    gp = GooglePlus(api_key)
-    googlePlus_mentionlist = gp.get_googleplus_data(keyword_to_search, limit)
-    save_to_file(googlePlus_mentionlist)
+    setmoke_api=SETMOKE_API(keyword_to_search,"conf/config.ini")
+    list=setmoke_api.get_data()
+    setmoke_api.add_to_database(list,'localhost','root','rehab105','SMM_DB1')
 
-    twitter_api_credentials = obj.get("twitter_credentials")
-    consumer_key = twitter_api_credentials["consumer_key"]
-    consumer_secret = twitter_api_credentials["consumer_secret"]
-    oauth_token = twitter_api_credentials["oauth_token"]
-    oauth_token_secret = twitter_api_credentials["oauth_token_secret"]
-    twitter=S_Twitter(consumer_key, consumer_secret, oauth_token, oauth_token_secret)
-    twitter_mentionlist=twitter.get_twitter_data(keyword_to_search, limit)
-
-    
-
-
-
+    #
+    #
+    # obj = ConfigurationParser("conf/config.ini")
+    # gp_api_credentials = obj.get("googlePlus_credentials")
+    # api_key = gp_api_credentials["api_key"]
+    # gp = GooglePlus(api_key)
+    #
+    # googlePlus_mentionlist = gp.get_googleplus_data(keyword_to_search, limit)
+    # db.add_kwd(keyword_to_search,googlePlus_mentionlist)
+    #
+    # twitter_api_credentials = obj.get("twitter_credentials")
+    # consumer_key = twitter_api_credentials["consumer_key"]
+    # consumer_secret = twitter_api_credentials["consumer_secret"]
+    # oauth_token = twitter_api_credentials["oauth_token"]
+    # oauth_token_secret = twitter_api_credentials["oauth_token_secret"]
+    # twitter=S_Twitter(consumer_key, consumer_secret, oauth_token, oauth_token_secret)
+    # twitter_mentionlist=twitter.get_twitter_data(keyword_to_search, limit)
+    # db.add_kwd(keyword_to_search, twitter_mentionlist)

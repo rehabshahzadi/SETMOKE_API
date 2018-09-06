@@ -1,5 +1,7 @@
 from apiclient import discovery
 from entities.Mention import  Mention
+from entities.User import User
+import moment
 class GooglePlus:
 
     def __init__(self, API_KEY):
@@ -20,16 +22,17 @@ class GooglePlus:
                 post = ' '.join(data['title'].strip().split())
                 if post:
                     mention = Mention()
+                    user=User()
                     #  print(TMPL % (data['actor']['displayName'],
                     #               data['published'], post) )
                     print(data)
                     print("----------------Post Info-----------------------")
                     mention.set_source('GooglePlus')
-                    print("Post ID: " + data["id"])
+
                     print("Post url: " + data["url"])
-                    mention.set_status_id(data['url'])
-                    print("Created at: " + data["published"])
-                    mention.set_time(data["published"])
+                    url=data["url"].split("/")
+                    mention.set_status_id(url[-1])
+
                     print("Resharer Count: " + str(data["object"]["resharers"]['totalItems']))
                     mention.set_reshare_count(str(data["object"]["resharers"]['totalItems']))
                     print("Replies Count: " + str(data["object"]["replies"]['totalItems']))
@@ -42,10 +45,17 @@ class GooglePlus:
                             for attachment in attachments:
                                 print("attachments:" + attachment["url"])
                     print("----------------User Info-----------------------")
+                    user.set_user_id(data['actor']["id"])
                     print("Diplay Name:" + data['actor']['displayName'])
-                    mention.set_display_name(data['actor']['displayName'])
-                    mention.set_display_picture( data['actor']['image']['url'])
+                    user.set_display_name(data['actor']['displayName'])
+                    user.set_display_picture( data['actor']['image']['url'])
                     print("Display Image:" + data['actor']['image']['url'])
+                    print("Created at: " + data["published"])
+                    m = moment.date(data["published"], '%Y-%m-%dT%H:%M:%SZ')
+                    sql_format=m.format('YYYY-M-D H:mm:ss')
+                    print(sql_format)
+                    user.set_time(sql_format)
+                    mention.set_user(user)
                     mentionList.append(mention)
                     counter = counter + 1
                     print("--------------------------------------------"+ str(counter))

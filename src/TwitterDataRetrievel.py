@@ -2,7 +2,9 @@ import  tweepy, json
 from twitter import *
 from entities.Mention import Mention
 from entities.Retweeter import Retweeter
-
+from entities.User import User
+from datetime import datetime
+import moment
 class S_Twitter :
 
     def __init__(self, consumer_key, consumer_secret, oauth_token, oauth_token_secret):
@@ -20,61 +22,78 @@ class S_Twitter :
         for tweet in tweets_list:
             if(self.count<self.limit) :
                 mention=Mention()
+                user=User()
+                # print("----------------Post Info-----------------------")
                 mention.set_source("Twitter")
                 mention.set_reshare_count(str(tweet["retweet_count"]))
-                print("Tweet Text: " + tweet["text"])
                 mention.set_text(tweet['text'])
                 # # print(json.dumps(tweet, sort_keys=True, indent=4))
-                # print("----------------Post Info-----------------------")
-                # print("Tweet ID: " + tweet["id_str"])
+                mention.set_status_id(tweet["id_str"])
+                print("Tweet ID: " + tweet["id_str"])
                 # print("Created at: " + tweet["created_at"])
-                # mention.set_time(tweet["created_at"])
+
+                sql_format = datetime.strptime(tweet["created_at"], '%a %b %d %H:%M:%S %z %Y')
+                user.set_time(sql_format.strftime('%Y-%m-%d %H:%M:%S'))
+                # t=datetime.strptime(tweet["created_at"], '%a %b %d %H:%M:%S %z %Y')
+                # t.strftime('%Y-%m-%d %H:%M:%S')
+                # m = moment.date(tweet["created_at"], '%a %b %d %H:%M:%S %z %Y')
+                # sql_format = m.format('YYYY-M-D H:mm:ss')
+                # print(sql_format)
+
+
                 # print("Tweet Language: " + tweet["lang"])
-                # print("Retweet Count: " + str(tweet["retweet_count"]))
 
 
                 if tweet["retweet_count"] != 0:
-                    mention.set_display_name(tweet["retweeted_status"]["user"]["screen_name"])
-                    mention.set_display_picture(tweet["retweeted_status"]['user']['profile_image_url'])
+                    user.set_display_name(tweet["retweeted_status"]["user"]["screen_name"])
+                    user.set_display_picture(tweet["retweeted_status"]['user']['profile_image_url'])
+
                     mention.set_status_id(str(tweet["retweeted_status"]['id']))
                     # print("----------------Retweeted User Info-----------------------")
-                    # print("User ID: " + tweet["retweeted_status"]["user"]["id_str"])
+                    user.set_user_id(tweet["retweeted_status"]["user"]["id_str"])
                     # print("User Name: " + tweet["retweeted_status"]["user"]["name"])
-                    # print("User Screen Name: " + tweet["retweeted_status"]["user"]["screen_name"])
-
-
                     # print("User Location: " + tweet["retweeted_status"]["user"]["location"])
-                    # print("Tweets: " + str(tweet["retweeted_status"]['user']['statuses_count']))
-                    # print("Folowing: " + str(tweet["retweeted_status"]['user']['friends_count']))
-                    # print("Follower: " + str(tweet["retweeted_status"]['user']['followers_count']))
-                    # print("Likes: " + str(tweet["retweeted_status"]['user']['favourites_count']))
+                    user.set_total_post( str(tweet["retweeted_status"]['user']['statuses_count']))
+                    user.set_following_count(str(tweet["retweeted_status"]['user']['friends_count']))
+                    user.set_follower_count( str(tweet["retweeted_status"]['user']['followers_count']))
+                    user.set_total_likes(str(tweet["retweeted_status"]['user']['favourites_count']))
                     # print("fav: " + str(tweet["retweeted_status"]['favorite_count']))
-                    # print("status_id: " + str(tweet["retweeted_status"]['id']))
 
 
                     retweets = self.twitter.statuses.retweets._id(_id=str(tweet["retweeted_status"]['id']))
                     retweeterlist = []
                     for retweet in retweets:
-                        retweeter = Retweeter()
+                        retweeter = User()
                         retweeter.set_display_name(retweet["user"]["screen_name"])
+
+                        #dt_str = datetime.datetime.strftime(retweet["created_at"], '%Y-%m-%d %H:%M:%S')
+
                         retweeter.set_time(retweet["created_at"])
                         retweeter.set_display_picture(retweet["user"]["profile_image_url"])
+
+                        retweeter.set_user_id(retweet["user"]["id_str"])
+                        retweeter.set_total_post(str(retweet['user']['statuses_count']))
+                        retweeter.set_following_count(str(retweet['user']['friends_count']))
+                        retweeter.set_follower_count(str(retweet['user']['followers_count']))
+                        retweeter.set_total_likes(str(retweet['user']['favourites_count']))
                         retweeterlist.append(retweeter)
                         # print(" - retweeted by %s" % (retweet["user"]["screen_name"]))
                         # print("retweet time:"  +retweet["created_at"] )
                     mention.set_resharer(retweeterlist)
                 else:
                     # print("----------------User Info-----------------------")
-                    # print("User ID: " + tweet["user"]["id_str"])
+                    user.set_user_id(tweet["user"]["id_str"])
                     # print("User Name: " + tweet["user"]["name"])
-                  #  print("User Screen Name: " + tweet["user"]["screen_name"])
-                    mention.set_display_picture(tweet['user']['profile_image_url'])
-                    mention.set_display_name(tweet['user']['screen_name'])
                     # print("User Location: " + tweet["user"]["location"])
-                    # print("Tweets: " + str(tweet['user']['statuses_count']))
-                    # print("Folowing: " + str(tweet['user']['friends_count']))
-                    # print("Follower: " + str(tweet['user']['followers_count']))
-                    # print("Likes: " + str(tweet['user']['favourites_count']))
+
+                    user.set_display_picture(tweet['user']['profile_image_url'])
+                    user.set_display_name(tweet['user']['screen_name'])
+                    user.set_total_post(str(tweet['user']['statuses_count']))
+                    user.set_following_count( str(tweet['user']['friends_count']))
+                    user.set_follower_count( str(tweet['user']['followers_count']))
+                    user.set_total_likes(str(tweet['user']['favourites_count']))
+
+                mention.set_user(user)
                 mentionlist.append(mention)
                 self.count=self.count+1
                 print("<---------------------"+str(self.count)+"---------------------------->")
